@@ -36,7 +36,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/projects" element={<ProjectList />} />
+              <Route
+                path="/projects"
+                element={
+                  <ProtectedRoute>
+                    <ProjectList />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/project/:id"
                 element={
