@@ -350,6 +350,10 @@
     padding: 50px;
     font-family: var(--font-family);
   }
+  .social-media {
+    display: flex;
+    gap: 20px;
+  }
   .footer-logo {
     display: flex;
     flex-direction: column;
