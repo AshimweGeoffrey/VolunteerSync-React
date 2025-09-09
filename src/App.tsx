@@ -36,14 +36,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/projects"
-                element={
-                  <ProtectedRoute>
-                    <ProjectList />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/projects" element={<ProjectList />} />
               <Route
                 path="/project/:id"
                 element={
