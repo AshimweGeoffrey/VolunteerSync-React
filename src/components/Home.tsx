@@ -1,11 +1,84 @@
 import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { mockStats, mockProjects } from "../data/mockData";
 import "../css/style.css";
+const ZOOM_PERCENT = 0.95;
 
 const Home: React.FC = () => {
   const latestProjects = mockProjects.slice(0, 3);
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined")
+      return;
 
+    const html = document.documentElement as HTMLElement | null;
+    const body = document.body as HTMLElement | null;
+
+    const zoomValue = ZOOM_PERCENT;
+    const zoomCss = `${Math.round(zoomValue * 100)}%`;
+
+    const applied: { method: "zoom" | "transform" | null } = { method: null };
+
+    const applyZoom = () => {
+      try {
+        // Try the non-standard but widely supported `zoom` property first
+        if (html) {
+          // Some browsers (Chrome/Edge) support html.style.zoom
+          // This changes rendering similar to browser zoom.
+          (html.style as any).zoom = zoomCss;
+          applied.method = "zoom";
+        }
+
+        // Double-check whether the zoom had any effect; Firefox doesn't support zoom.
+        const supportsZoom =
+          (html && (html.style as any).zoom) ||
+          (body && (body.style as any).zoom);
+        if (!supportsZoom) {
+          // Fallback: use transform scale on body/html. This requires compensating
+          // width so the scaled content fits the viewport without clipping.
+          const targetEl = body || html;
+          if (targetEl) {
+            targetEl.style.transformOrigin = "0 0";
+            targetEl.style.transform = `scale(${zoomValue})`;
+            // Expand the width so the scaled-down content still fills the viewport
+            // and doesn't become scrollable horizontally.
+            targetEl.style.width = `${100 / zoomValue}%`;
+            applied.method = "transform";
+          }
+        }
+      } catch (e) {
+        // No-op: don't throw if the browser disallows style changes
+        applied.method = null;
+      }
+    };
+
+    const cleanupZoom = () => {
+      try {
+        if (applied.method === "zoom") {
+          if (html) (html.style as any).zoom = "";
+          if (body) (body.style as any).zoom = "";
+        } else if (applied.method === "transform") {
+          const targetEl = body || html;
+          if (targetEl) {
+            targetEl.style.transform = "";
+            targetEl.style.transformOrigin = "";
+            targetEl.style.width = "";
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    // Apply once on mount and again after load to handle layout differences.
+    applyZoom();
+    window.addEventListener("load", applyZoom);
+
+    return () => {
+      window.removeEventListener("load", applyZoom);
+      cleanupZoom();
+    };
+  }, []);
   return (
     <div className="container">
       {/* Hero Section */}
