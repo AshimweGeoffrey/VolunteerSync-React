@@ -452,3 +452,11 @@
     }
   }
 }
+.logo {
+  h1 {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: var(--font-family);
+    left: -10px;
+  }
+}
