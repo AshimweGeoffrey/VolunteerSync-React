@@ -165,8 +165,17 @@ const Home: React.FC = () => {
               <button>Find Out More</button>
             </Link>
           </div>
-          <div>
-            <img src="/assets/video.svg" alt="video" />
+          <div className="video-container">
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/2szQhR4oZtA"
+              title="VolunteerSync Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{ maxWidth: "100%" }}
+            />
           </div>
         </div>
       </section>
